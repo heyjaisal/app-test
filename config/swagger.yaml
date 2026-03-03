@@ -1,0 +1,242 @@
+openapi: 3.0.0
+info:
+  title: Affiliate Backend API
+  version: 1.0.0
+  description: Complete API documentation for Affiliate Backend
+  contact:
+    email: 3301ad@gmail.com
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+
+tags:
+  - name: Authentication
+    description: User authentication endpoints
+  - name: KYC
+    description: KYC management for affiliates
+  - name: Admin KYC
+    description: Admin KYC approval/rejection
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Affiliate user token
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Admin token from caremall-admin-backend
+
+paths:
+  /auth/send-otp:
+    post:
+      tags: [Authentication]
+      summary: Send OTP for login/signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, mode]
+              properties:
+                phone:
+                  type: string
+                  example: "9876543210"
+                mode:
+                  type: string
+                  enum: [login, signup]
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '200':
+          description: OTP sent successfully
+
+  /auth/verify-otp:
+    post:
+      tags: [Authentication]
+      summary: Verify OTP and login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                otp:
+                  type: number
+      responses:
+        '200':
+          description: Login successful
+
+  /auth/resend-otp:
+    post:
+      tags: [Authentication]
+      summary: Resend OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+      responses:
+        '200':
+          description: OTP resent
+
+  /auth/refresh-token:
+    post:
+      tags: [Authentication]
+      summary: Refresh access token
+      responses:
+        '200':
+          description: Token refreshed
+
+  /auth/logout:
+    post:
+      tags: [Authentication]
+      summary: Logout user
+      responses:
+        '200':
+          description: Logged out successfully
+
+  /auth/kyc/submit:
+    post:
+      tags: [KYC]
+      summary: Submit KYC for verification
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fullName, panNumber, aadharNumber, bankAccountNumber]
+              properties:
+                fullName:
+                  type: string
+                dateOfBirth:
+                  type: string
+                panNumber:
+                  type: string
+                aadharNumber:
+                  type: string
+                bankAccountNumber:
+                  type: string
+      responses:
+        '200':
+          description: KYC submitted
+
+  /auth/kyc/status:
+    get:
+      tags: [KYC]
+      summary: Get KYC status
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: KYC status retrieved
+
+  /auth/kyc/update:
+    put:
+      tags: [KYC]
+      summary: Update KYC details
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: KYC updated
+
+  /auth/test:
+    get:
+      tags: [Authentication]
+      summary: Test route
+      responses:
+        '200':
+          description: Route working
+
+  /admin/kyc/pending:
+    get:
+      tags: [Admin KYC]
+      summary: Get all pending KYC submissions
+      security:
+        - AdminBearerAuth: []
+      responses:
+        '200':
+          description: List of pending KYC
+
+  /admin/kyc/{userId}:
+    get:
+      tags: [Admin KYC]
+      summary: Get KYC details by user ID
+      security:
+        - AdminBearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: KYC details
+
+  /admin/kyc/approve/{userId}:
+    put:
+      tags: [Admin KYC]
+      summary: Approve KYC
+      security:
+        - AdminBearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: KYC approved
+
+  /admin/kyc/reject/{userId}:
+    put:
+      tags: [Admin KYC]
+      summary: Reject KYC
+      security:
+        - AdminBearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason:
+                  type: string
+                  example: "Invalid PAN card image"
+      responses:
+        '200':
+          description: KYC rejected
