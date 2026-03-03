@@ -1,0 +1,403 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Blog Node.js API Documentation",
+        "version": "1.0.0",
+        "description": "API Documentation for the Blog application."
+    },
+    "servers": [
+        {
+            "url": "https://app-test343434343434.onrender.com",
+            "description": "Production Server"
+        },
+        {
+            "url": "http://localhost:5000",
+            "description": "Local Development Server"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ]
+            },
+            "Blog": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "image": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "title",
+                    "description"
+                ]
+            }
+        }
+    },
+    "paths": {
+        "/api/auth/register": {
+            "post": {
+                "summary": "Register a new user",
+                "tags": [
+                    "Authentication"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully"
+                    },
+                    "400": {
+                        "description": "Bad Request or User already exists"
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "summary": "Login user and get token",
+                "tags": [
+                    "Authentication"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "password"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response with token"
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/api/blogs": {
+            "get": {
+                "summary": "Get all blogs",
+                "tags": [
+                    "Blogs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of blogs"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new blog",
+                "tags": [
+                    "Blogs"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Blog"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Blog created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/blogs/my": {
+            "get": {
+                "summary": "Get blogs for the authenticated user",
+                "tags": [
+                    "Blogs"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of user's blogs"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/blogs/{id}": {
+            "put": {
+                "summary": "Update a blog",
+                "tags": [
+                    "Blogs"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Blog"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Blog updated"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a blog",
+                "tags": [
+                    "Blogs"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blog deleted"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/upload/images": {
+            "post": {
+                "summary": "Upload multiple images",
+                "tags": [
+                    "Uploads"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "files": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Images uploaded"
+                    }
+                }
+            }
+        },
+        "/api/upload/image": {
+            "post": {
+                "summary": "Upload a single image",
+                "tags": [
+                    "Uploads"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Image uploaded"
+                    }
+                }
+            }
+        },
+        "/api/upload/video": {
+            "post": {
+                "summary": "Upload a single video",
+                "tags": [
+                    "Uploads"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Video uploaded"
+                    }
+                }
+            }
+        },
+        "/api/upload/delete": {
+            "delete": {
+                "summary": "Delete a file from S3",
+                "tags": [
+                    "Uploads"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "key": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "key"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        }
+    }
+}

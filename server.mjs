@@ -2,15 +2,29 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import swaggerUi from "swagger-ui-express";
 import authRoutes from "./routes/auth.router.mjs";
 import blogRoutes from "./routes/blog.router.mjs";
 import uploadRoutes from "./routes/upload.router.mjs";
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const swaggerDocument = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "swagger.json"), "utf8")
+);
+
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Swagger Docs Route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
 app.use("/api/auth", authRoutes);
