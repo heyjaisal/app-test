@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createBlog, getBlogs, getMyBlogs, updateBlog, deleteBlog } from "../controllers/blog.controller.mjs";
+import { createBlog, getBlogs, getBlogById, getMyBlogs, updateBlog, deleteBlog } from "../controllers/blog.controller.mjs";
 import protect from "../middlewares/auth.mjs";
 
 const router = Router();
@@ -11,6 +11,7 @@ router.route("/")
 router.get("/my", protect, getMyBlogs);
 
 router.route("/:id")
+  .get(getBlogById)
   .put(protect, updateBlog)
   .delete(protect, deleteBlog);
 
