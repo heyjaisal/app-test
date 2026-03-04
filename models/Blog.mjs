@@ -6,8 +6,8 @@ const blogSchema = new mongoose.Schema({
   description: { type: String, required: true },
   category: { 
     type: String, 
-    enum: ["Tech", "Lifestyle", "Food", "Travel", "Health", "Business", "Fashion", "Education"],
-    default: "Tech"
+    enum: ["Tech", "Lifestyle", "Food", "Travel", "Health", "Business", "Fashion", "Education","Others"],
+    default: "Others"
   },
   tags: [{ type: String }],
   image: { type: String },
