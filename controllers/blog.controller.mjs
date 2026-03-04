@@ -2,16 +2,17 @@ import Blog from "../models/Blog.mjs";
 
 export const createBlog = async (req, res) => {
   try {
-    const { title, description, tags, image } = req.body;
+    const { title, description, tags, image, category } = req.body;
     
-    if (!title || !description) {
-      return res.status(400).json({ message: "Title and description are required" });
+    if (!title || !description || !category) {
+      return res.status(400).json({ message: "Title, description, and category are required" });
     }
 
     const blog = await Blog.create({
       user: req.user.id,
       title,
       description,
+      category,
       tags: tags || [],
       image: image || "",
     });
@@ -24,7 +25,12 @@ export const createBlog = async (req, res) => {
 
 export const getBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find().populate("user", "name email").sort({ createdAt: -1 });
+    const { category } = req.query;
+    const filter = {};
+    if (category) {
+      filter.category = category;
+    }
+    const blogs = await Blog.find(filter).populate("user", "name email").sort({ createdAt: -1 });
     res.json(blogs);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch blogs", error: error.message });
@@ -66,10 +72,11 @@ export const updateBlog = async (req, res) => {
       return res.status(401).json({ message: "User not authorized" });
     }
 
-    const { title, description, tags, image } = req.body;
+    const { title, description, tags, image, category } = req.body;
 
     blog.title = title || blog.title;
     blog.description = description || blog.description;
+    blog.category = category || blog.category;
     blog.tags = tags || blog.tags;
     blog.image = image || blog.image;
 

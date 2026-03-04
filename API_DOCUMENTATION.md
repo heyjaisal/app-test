@@ -65,6 +65,7 @@ Example: `Authorization: Bearer <your_jwt_token>`
 ### Get All Blogs
 Retrieves a list of all published blogs, sorted by creation date descending.
 - **Endpoint**: `GET /api/blogs`
+- **Query Parameters**: `?category=Tech` (Optional filter by category)
 - **Authorization**: Not required
 - **Success Response (200 OK)**:
   ```json
@@ -73,6 +74,7 @@ Retrieves a list of all published blogs, sorted by creation date descending.
       "_id": "651f1c24e9...",
       "title": "My First Blog",
       "description": "This is a detailed description of the blog.",
+      "category": "Tech",
       "tags": ["tech", "coding"],
       "image": "https://s3.amazonaws.com/bucket/image.jpg",
       "user": {
@@ -105,13 +107,14 @@ Creates a new blog entry.
   {
     "title": "My Awesome Post",
     "description": "Content of my post goes here.",
+    "category": "Tech",
     "tags": ["react", "frontend"],                 // Optional
     "image": "https://s3.amazonaws.com/bucket/img" // Optional
   }
   ```
 - **Success Response (201 Created)**: Returns the newly created blog object.
 - **Error Responses**:
-  - `400 Bad Request`: `{ "message": "Title and description are required" }`
+  - `400 Bad Request`: `{ "message": "Title, description, and category are required" }`
   - `500 Internal Server Error`
 
 ### Update Blog
@@ -124,6 +127,7 @@ Updates an existing blog entry. Users can only update their own blogs.
   {
     "title": "Updated Title",
     "description": "Updated content goes here.",
+    "category": "Lifestyle",
     "tags": ["new-tag"],
     "image": "https://s3.amazonaws.com/bucket/new-img"
   }

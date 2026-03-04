@@ -58,13 +58,27 @@
                             "type": "string"
                         }
                     },
+                    "category": {
+                        "type": "string",
+                        "enum": [
+                            "Tech",
+                            "Lifestyle",
+                            "Food",
+                            "Travel",
+                            "Health",
+                            "Business",
+                            "Fashion",
+                            "Education"
+                        ]
+                    },
                     "image": {
                         "type": "string"
                     }
                 },
                 "required": [
                     "title",
-                    "description"
+                    "description",
+                    "category"
                 ]
             }
         }
@@ -139,6 +153,27 @@
                 "summary": "Get all blogs",
                 "tags": [
                     "Blogs"
+                ],
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter blogs by category",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Tech",
+                                "Lifestyle",
+                                "Food",
+                                "Travel",
+                                "Health",
+                                "Business",
+                                "Fashion",
+                                "Education"
+                            ]
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {

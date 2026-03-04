@@ -4,6 +4,11 @@ const blogSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
+  category: { 
+    type: String, 
+    enum: ["Tech", "Lifestyle", "Food", "Travel", "Health", "Business", "Fashion", "Education"],
+    default: "Tech"
+  },
   tags: [{ type: String }],
   image: { type: String },
 }, {
